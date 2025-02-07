@@ -1,10 +1,10 @@
 {
-    "name": "krayin/rest-api",
+    "name": "thalissonm/rest-api",
     "license": "MIT",
     "authors": [
         {
-            "name": "Devansh Bawari",
-            "email": "devansh.bawari419@webkul.com"
+            "name": "Thalisson Muniz",
+            "email": "munizepinheiro@outlook.com"
         }
     ],
     "autoload": {

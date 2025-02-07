@@ -13,7 +13,7 @@ Krayin REST API is a medium to use the features of the core Krayin System. By us
 #### For the latest version of rest api
 
 ~~~shell
-composer require krayin/rest-api
+composer require thalissonm/rest-api
 ~~~
 
 ### Add the following options to your .env file
