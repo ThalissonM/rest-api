@@ -70,17 +70,18 @@ class LeadController extends Controller
      */
     public function store(LeadForm $request): JsonResource
     {
-        Event::dispatch('lead.create.before');
+        try {
+            Event::dispatch('lead.create.before');
 
-        $data = $request->all();
+            $data = $request->all();
 
-        $data['status'] = 1;
+            $data['status'] = 1;
 
-        if ($data['lead_pipeline_stage_id']) {
+            if ($data['lead_pipeline_stage_id']) {
             $stage = $this->stageRepository->findOrFail($data['lead_pipeline_stage_id']);
 
             $data['lead_pipeline_id'] = $stage->lead_pipeline_id;
-        } else {
+            } else {
             $pipeline = $this->pipelineRepository->getDefaultPipeline();
 
             $stage = $pipeline->stages()->first();
@@ -88,20 +89,25 @@ class LeadController extends Controller
             $data['lead_pipeline_id'] = $pipeline->id;
 
             $data['lead_pipeline_stage_id'] = $stage->id;
-        }
+            }
 
-        if (in_array($stage->code, ['won', 'lost'])) {
+            if (in_array($stage->code, ['won', 'lost'])) {
             $data['closed_at'] = Carbon::now();
-        }
+            }
 
-        $lead = $this->leadRepository->create($data);
+            $lead = $this->leadRepository->create($data);
 
-        Event::dispatch('lead.create.after', $lead);
+            Event::dispatch('lead.create.after', $lead);
 
-        return new JsonResource([
+            return new JsonResource([
             'data'    => new LeadResource($lead),
             'message' => trans('rest-api::app.leads.create-success'),
-        ]);
+            ]);
+        } catch (\Exception $exception) {
+            return new JsonResource([
+            'message' => $exception->getMessage(),
+            ], 500);
+        }
     }
 
     /**
